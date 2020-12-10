@@ -1,6 +1,7 @@
 import { useParams, useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Axios from "axios";
+import UserForm from "./UserForm";
 const { Header, Button } = require("semantic-ui-react");
 
 const User = (props) => {
@@ -23,6 +24,17 @@ const User = (props) => {
       setError(err.response.status);
     }
   };
+
+  const updateUser = async (user) => {
+    console.log("updateUser called");
+    try {
+      let res = await Axios.put(`https://reqres.in/api/users/${id}`, user);
+      setUser(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     getUser();
   }, []);
@@ -36,9 +48,14 @@ const User = (props) => {
       <p>id from react router: {id}</p>
       <p>id from api call: {user.id}</p>
       <p>email from api call: {user.email}</p>
+      <p>firstName from api call: {user.first_name}</p>
+      <p>lastName from api call: {user.last_name}</p>
+      <p>avatar from api call: {user.avatar}</p>
 
       <Button onClick={props.history.goBack}>Go Back 1</Button>
       <Button onClick={() => history.push("/")}>Home</Button>
+
+      <UserForm user={user} updateUserHandler={updateUser} />
     </>
   );
 };
